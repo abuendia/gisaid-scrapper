@@ -1,6 +1,8 @@
 import argparse, sys
-from gisaid_scrapper import GisaidCoVScrapper
 import os
+
+from gisaid_flu_scraper import GisaidFluScraper
+
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -61,21 +63,9 @@ if __name__ == "__main__":
     except ValueError:
         print(parser.format_help())
         sys.exit(-1)
-    scrapper = GisaidCoVScrapper(args.headless, whole, destination)
-    scrapper.login(login, passwd)
-    # scrapper.load_epicov()
-    # page = 0
-
-    # for i in range(150):
-    #     scrapper.go_to_next_page()
-    #     page += 1
-
-    # while not scrapper.finished:
-    #     print("Page:", page)
-    #     scrapper.download_from_curr_page()
-    #     scrapper.go_to_next_page()
-    #     page += 1
-
-    scrapper.download_packages('metadata_tsv')
-    scrapper.download_packages('fasta.tar')
+    scraper = GisaidFluScraper(args.headless, whole, destination)
+    scraper.login(login, passwd)
+    scraper.load_epicov()
+    scraper.download_packages('metadata_tsv')
+    scraper.download_packages('fasta.tar')
     print("New samples:", scrapper.new_downloaded)
