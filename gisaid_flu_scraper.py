@@ -46,14 +46,15 @@ class GisaidFluScraper:
         destination: str = "fastas"
     ):
         self.whole_genome_only = whole_genome_only
-
         self.destination = destination.rstrip("/")
         self.finished = False
         self.already_downloaded = 0
         self.samples_count = None
         self.new_downloaded = 0
 
-        self.driver = webdriver.Chrome(executable_path="/Users/alejandrobuendia/Documents/projects/gisaid-scrapper/chromedriver-mac-x64/chromedriver")
+        exec_path="/Users/alejandrobuendia/Documents/projects/gisaid-scrapper/chromedriver-mac-x64/chromedriver"
+    
+        self.driver = webdriver.Chrome(executable_path=exec_path)
         self.driver.implicitly_wait(1000)
         self.driver.set_window_size(1366, 2000)
         if not os.path.exists(destination):
@@ -86,7 +87,7 @@ class GisaidFluScraper:
         )
         WebDriverWait(self.driver, 30).until(cond.staleness_of(login_box))
 
-    def load_epicov(self):
+    def load_epiflu(self):
         time.sleep(2)
         self._go_to_seq_browser()
 
@@ -103,10 +104,12 @@ class GisaidFluScraper:
     def _go_to_seq_browser(self):
         self.driver.execute_script(
             "document.getElementById('sys_curtain').remove()")
-        self.driver.find_element_by_link_text("EpiCoV™").click()
+        self.driver.find_element_by_link_text("EpiCov™").click()
+
+        breakpoint()
 
         time.sleep(3)
-
+        
         self.driver.execute_script(
             "document.getElementById('sys_curtain').remove()")
         self.driver.find_elements_by_xpath(

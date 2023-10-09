@@ -37,7 +37,7 @@ METADATA_COLUMNS = [
 ]
 
 
-class GisaidCoVScrapper:
+class GisaidCovidScraper:
     def __init__(
         self,
         headless: bool = False,
@@ -45,38 +45,15 @@ class GisaidCoVScrapper:
         destination: str = "fastas"
     ):
         self.whole_genome_only = whole_genome_only
-
         self.destination = destination.rstrip("/")
         self.finished = False
         self.already_downloaded = 0
         self.samples_count = None
         self.new_downloaded = 0
 
-        fp = webdriver.FirefoxProfile()
-        fp.set_preference("browser.download.folderList",2)
-        fp.set_preference("browser.download.manager.showWhenStarting", False)
-        fp.set_preference("browser.download.dir", os.getcwd())
-        fp.set_preference("browser.helperApps.neverAsk.saveToDisk","application/octet-stream")
-
-        options = Options()
-        options.headless = headless
-        if headless and "DOCKER_MODE" in os.environ:
-            options.add_argument("--headless")
-            options.add_argument('--disable-gpu')
-            options.add_argument('--no-sandbox')
-            for i in range(30):
-                time.sleep(1)
-                try:
-                    self.driver = webdriver.Remote(
-                        command_executor="http://selenium:4444/wd/hub",
-                        desired_capabilities=options.to_capabilities()
-                    )
-                    break
-                except MaxRetryError:
-                    pass
-
-        else:
-            self.driver = webdriver.Firefox(fp, options=options)
+        exec_path="/Users/alejandrobuendia/Documents/projects/gisaid-scrapper/chromedriver-mac-x64/chromedriver"
+    
+        self.driver = webdriver.Chrome(executable_path=exec_path)
         self.driver.implicitly_wait(1000)
         self.driver.set_window_size(1366, 2000)
         if not os.path.exists(destination):
